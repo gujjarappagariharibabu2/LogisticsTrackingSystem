@@ -19,7 +19,7 @@ namespace LogisticsTrackingSystem.Controllers
                 _context.Shipments.Count();
 
             ViewBag.ActiveShipments =
-                _context.Shipments
+                _context.Shipments.Count();
                     
             ViewBag.ArchivedShipments =
                 _context.Shipments
