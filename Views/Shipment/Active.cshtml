@@ -1,3 +1,4 @@
+
 @using Microsoft.AspNetCore.Http
 @model List<LogisticsTrackingSystem.Models.Shipment>
 
@@ -6,6 +7,7 @@
 }
 
 <h2>Active Shipments</h2>
+
 <form method="get" asp-action="Active">
 
     <div class="row mb-3">
@@ -16,6 +18,35 @@
                    name="searchTerm"
                    class="form-control"
                    placeholder="Search Tracking Number" />
+
+        </div>
+
+        <div class="col-md-3">
+
+            <select name="status"
+                    class="form-control">
+
+                <option value="">
+                    All Statuses
+                </option>
+
+                <option value="Pending">
+                    Pending
+                </option>
+
+                <option value="In Transit">
+                    In Transit
+                </option>
+
+                <option value="Delivered">
+                    Delivered
+                </option>
+
+                <option value="Cancelled">
+                    Cancelled
+                </option>
+
+            </select>
 
         </div>
 
@@ -31,16 +62,29 @@
     </div>
 
 </form>
+
 <table class="table table-bordered">
 
     <thead>
+
         <tr>
+
             <th>Id</th>
+
             <th>Tracking Number</th>
+
             <th>Destination</th>
-            <th>Archived</th>
+
+            <th>Status</th>
+
+            <th>Expected Delivery</th>
+
+            <th>Delivered Date</th>
+
             <th>Actions</th>
+
         </tr>
+
     </thead>
 
     <tbody>
@@ -55,22 +99,52 @@
 
             <td>@shipment.Destination</td>
 
-            <td>@shipment.IsArchived</td>
             <td>
-    <a asp-action="Edit"
-       asp-route-id="@shipment.Id"
-       class="btn btn-sm btn-warning">
-        Edit
-    </a>
-    @if (Context.Session.GetString("Role") == "Admin")
-    {
-         <a asp-action="Delete"
-             asp-route-id="@shipment.Id"
-              class="btn btn-sm btn-danger">
-             Delete
-         </a>
-    }
-</td>
+                @(shipment.Status ?? "Pending")
+            </td>
+
+            <td>
+                @shipment.ExpectedDeliveryDate
+                    .ToShortDateString()
+            </td>
+
+            <td>
+                @(shipment.DeliveredDate
+                    ?.ToShortDateString()
+                    ?? "Not Delivered")
+            </td>
+
+            <td>
+
+                <a asp-action="Edit"
+                   asp-route-id="@shipment.Id"
+                   class="btn btn-sm btn-warning">
+                    Edit
+                </a>
+
+                <a asp-action="MarkTransit"
+                   asp-route-id="@shipment.Id"
+                   class="btn btn-sm btn-info">
+                    Transit
+                </a>
+
+                <a asp-action="MarkDelivered"
+                   asp-route-id="@shipment.Id"
+                   class="btn btn-sm btn-success">
+                    Deliver
+                </a>
+
+                @if (Context.Session.GetString("Role")
+                    == "Admin")
+                {
+                    <a asp-action="Delete"
+                       asp-route-id="@shipment.Id"
+                       class="btn btn-sm btn-danger">
+                        Delete
+                    </a>
+                }
+
+            </td>
 
         </tr>
     }

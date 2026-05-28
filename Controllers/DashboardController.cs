@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using LogisticsTrackingSystem.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,12 +15,23 @@ namespace LogisticsTrackingSystem.Controllers
         }
 
         public IActionResult Index()
+        
         {
+
+            if (HttpContext.Session.GetString("Role")
+                 != "Admin")
+             {
+                 return RedirectToAction(
+                     "Login",
+                     "Account");
+             }
+
             ViewBag.TotalShipments =
                 _context.Shipments.Count();
 
             ViewBag.ActiveShipments =
-                _context.Shipments.Count();
+                 _context.Shipments
+                     .Count(x => !x.IsArchived);
                     
             ViewBag.ArchivedShipments =
                 _context.Shipments
@@ -27,6 +39,11 @@ namespace LogisticsTrackingSystem.Controllers
 
             ViewBag.TotalUsers =
                 _context.Users.Count();
+
+            ViewBag.OverdueShipments =
+                 _context.Shipments.Count(x =>
+                     x.ExpectedDeliveryDate < DateTime.Now &&
+                     x.Status != "Delivered");
 
             return View();
         }

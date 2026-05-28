@@ -13,6 +13,7 @@
             <th>Id</th>
             <th>Tracking Number</th>
             <th>Destination</th>
+            <th>Status</th>
         </tr>
     </thead>
 
@@ -23,10 +24,12 @@
         <tr>
 
             <td>@shipment.Id</td>
+            
 
             <td>@shipment.TrackingNumber</td>
 
             <td>@shipment.Destination</td>
+            <td>@(shipment.Status ?? "Pending")</td>
 
         </tr>
     }

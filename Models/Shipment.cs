@@ -17,5 +17,13 @@ namespace LogisticsTrackingSystem.Models
             = string.Empty;
 
         public bool IsArchived { get; set; }
+        public string Status { get; set; }
+              = "Pending";
+        public DateTime CreatedDate { get; set; }
+             = DateTime.Now;
+
+        public DateTime ExpectedDeliveryDate { get; set; }
+
+         public DateTime? DeliveredDate { get; set; }
     }
 }
