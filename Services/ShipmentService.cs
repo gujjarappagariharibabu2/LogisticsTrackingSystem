@@ -6,7 +6,9 @@ namespace LogisticsTrackingSystem.Services
     {
         public List<Shipment> GetActiveShipments(List<Shipment> shipments)
         {
-            return shipments;
+            return shipments
+                .Where(x => !x.IsArchived)
+                .ToList();
         }
     }
 }
