@@ -1,0 +1,9 @@
+{
+  "base_commit": "a0420af",
+  "fail_to_pass": [
+    "test_archived_shipments_excluded"
+  ],
+  "pass_to_pass": [
+    "test_active_shipments_returned"
+  ]
+}

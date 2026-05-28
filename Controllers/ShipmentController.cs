@@ -1,37 +1,153 @@
+using LogisticsTrackingSystem.Data;
 using LogisticsTrackingSystem.Models;
 using LogisticsTrackingSystem.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LogisticsTrackingSystem.Controllers
 {
     public class ShipmentController : Controller
     {
-        private readonly ShipmentService _service = new ShipmentService();
+        // Database context
+        private readonly ApplicationDbContext _context;
 
-        public IActionResult Active()
+        // Shipment service
+        private readonly ShipmentService _service;
+
+        // Constructor Dependency Injection
+        public ShipmentController(
+            ApplicationDbContext context)
         {
-            var shipments = new List<Shipment>
+            _context = context;
+            _service = new ShipmentService();
+        }
+
+        // Display active shipments
+         public async Task<IActionResult> Active(string searchTerm)
+       {
+             // Read shipments from database
+             var shipments =
+                await _context.Shipments.ToListAsync();
+
+           // Apply business logic
+            var result = shipments;
+                 
+
+        // Search filter
+            if (!string.IsNullOrEmpty(searchTerm))
             {
-                new Shipment
-                {
-                    Id = 1,
-                    TrackingNumber = "TRK100",
-                    Destination = "Delhi",
-                    IsArchived = false
-                },
+                result = result
+                     .Where(x =>
+                          x.TrackingNumber.Contains(searchTerm))
+                     .ToList();
+            }
 
-                new Shipment
-                {
-                    Id = 2,
-                    TrackingNumber = "TRK200",
-                    Destination = "Mumbai",
-                    IsArchived = true
-                }
-            };
+            return View(result);
+        }
 
-            var result = _service.GetActiveShipments(shipments);
+         // Display archived shipments
+         public async Task<IActionResult> Archived()
+         {
+            var shipments =
+                 await _context.Shipments.ToListAsync();
 
-            return Json(result);
+            var result =
+                  _service.GetArchivedShipments(shipments);
+ 
+           return View(result);
+        }
+
+
+        // GET: Create Shipment Page
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Save Shipment
+        [HttpPost]
+        public async Task<IActionResult> Create(
+            Shipment shipment)
+        {
+            if (ModelState.IsValid)
+            {
+                // Save shipment into database
+                _context.Shipments.Add(shipment);
+
+                // Commit changes
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Active));
+            }
+
+            return View(shipment);
+        }
+
+        // GET: Edit Shipment
+        public async Task<IActionResult> Edit(int id)
+        {
+            var shipment =
+                await _context.Shipments.FindAsync(id);
+
+            if (shipment == null)
+            {
+                return NotFound();
+            }
+
+            return View(shipment);
+        }
+
+        // POST: Update Shipment
+        [HttpPost]
+        public async Task<IActionResult> Edit(
+            int id,
+            Shipment shipment)
+        {
+            if (id != shipment.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(shipment);
+
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Active));
+            }
+
+            return View(shipment);
+        }
+         // GET: Delete Shipment
+        public async Task<IActionResult> Delete(int id)
+        {
+             var shipment =
+                await _context.Shipments.FindAsync(id);
+
+             if (shipment == null)
+            {
+               return NotFound();
+            }
+    
+             return View(shipment);
+        }
+
+      // POST: Confirm Delete
+        [HttpPost, ActionName("Delete")]
+         public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var shipment =
+                await _context.Shipments.FindAsync(id);
+
+             if (shipment != null)
+           {
+                 _context.Shipments.Remove(shipment);
+
+                 await _context.SaveChangesAsync();
+           }
+
+              return RedirectToAction(nameof(Active));
         }
     }
 }

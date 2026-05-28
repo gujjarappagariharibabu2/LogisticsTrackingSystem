@@ -1,0 +1,57 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2>Admin Dashboard</h2>
+
+<div class="row">
+
+    <div class="col-md-3">
+
+        <div class="card p-3 mb-3">
+
+            <h5>Total Shipments</h5>
+
+            <h3>@ViewBag.TotalShipments</h3>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card p-3 mb-3">
+
+            <h5>Active Shipments</h5>
+
+            <h3>@ViewBag.ActiveShipments</h3>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card p-3 mb-3">
+
+            <h5>Archived Shipments</h5>
+
+            <h3>@ViewBag.ArchivedShipments</h3>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card p-3 mb-3">
+
+            <h5>Total Users</h5>
+
+            <h3>@ViewBag.TotalUsers</h3>
+
+        </div>
+
+    </div>
+
+</div>

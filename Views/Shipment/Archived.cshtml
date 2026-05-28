@@ -1,0 +1,36 @@
+@model List<LogisticsTrackingSystem.Models.Shipment>
+
+@{
+    ViewData["Title"] = "Archived Shipments";
+}
+
+<h2>Archived Shipments</h2>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Tracking Number</th>
+            <th>Destination</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    @foreach (var shipment in Model)
+    {
+        <tr>
+
+            <td>@shipment.Id</td>
+
+            <td>@shipment.TrackingNumber</td>
+
+            <td>@shipment.Destination</td>
+
+        </tr>
+    }
+
+    </tbody>
+
+</table>

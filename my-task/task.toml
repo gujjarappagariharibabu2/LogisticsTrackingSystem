@@ -1,0 +1,9 @@
+name = "shipment-archive-filter-bug"
+description = "Fix archived shipments appearing in active shipment results."
+difficulty = "easy"
+
+[repository]
+url = "local"
+
+[agent]
+entrypoint = "solution/solve.sh"

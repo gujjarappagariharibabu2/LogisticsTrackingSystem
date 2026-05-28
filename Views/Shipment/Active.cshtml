@@ -1,0 +1,80 @@
+@using Microsoft.AspNetCore.Http
+@model List<LogisticsTrackingSystem.Models.Shipment>
+
+@{
+    ViewData["Title"] = "Active Shipments";
+}
+
+<h2>Active Shipments</h2>
+<form method="get" asp-action="Active">
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text"
+                   name="searchTerm"
+                   class="form-control"
+                   placeholder="Search Tracking Number" />
+
+        </div>
+
+        <div class="col-md-2">
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Search
+            </button>
+
+        </div>
+
+    </div>
+
+</form>
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Tracking Number</th>
+            <th>Destination</th>
+            <th>Archived</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    @foreach (var shipment in Model)
+    {
+        <tr>
+
+            <td>@shipment.Id</td>
+
+            <td>@shipment.TrackingNumber</td>
+
+            <td>@shipment.Destination</td>
+
+            <td>@shipment.IsArchived</td>
+            <td>
+    <a asp-action="Edit"
+       asp-route-id="@shipment.Id"
+       class="btn btn-sm btn-warning">
+        Edit
+    </a>
+    @if (Context.Session.GetString("Role") == "Admin")
+    {
+         <a asp-action="Delete"
+             asp-route-id="@shipment.Id"
+              class="btn btn-sm btn-danger">
+             Delete
+         </a>
+    }
+</td>
+
+        </tr>
+    }
+
+    </tbody>
+
+</table>
