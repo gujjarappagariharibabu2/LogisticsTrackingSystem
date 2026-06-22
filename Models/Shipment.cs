@@ -25,5 +25,12 @@ namespace LogisticsTrackingSystem.Models
         public DateTime ExpectedDeliveryDate { get; set; }
 
          public DateTime? DeliveredDate { get; set; }
+         public int? UserId { get; set; }
+
+         public User? User { get; set; }
+         
+        public string ShipmentCode { get; set; }
+             = string.Empty;
+
     }
 }

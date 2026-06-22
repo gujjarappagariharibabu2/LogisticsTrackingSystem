@@ -74,7 +74,18 @@ namespace LogisticsTrackingSystem.Controllers
                     "Home");
             }
 
+
+
             return View(user);
+        }
+        // Logout user
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+
+            return RedirectToAction(
+                "Login",
+                "Account");
         }
     }
 }

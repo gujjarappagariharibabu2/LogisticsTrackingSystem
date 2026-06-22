@@ -70,7 +70,8 @@
         <tr>
 
             <th>Id</th>
-
+            <th>Shipment Code</th>
+            
             <th>Tracking Number</th>
 
             <th>Destination</th>
@@ -89,65 +90,63 @@
 
     <tbody>
 
-    @foreach (var shipment in Model)
-    {
-        <tr>
+        @foreach (var shipment in Model)
+        {
+            <tr>
 
-            <td>@shipment.Id</td>
+                <td>@shipment.Id</td>
 
-            <td>@shipment.TrackingNumber</td>
+                <td>@shipment.ShipmentCode</td>
 
-            <td>@shipment.Destination</td>
+                <td>@shipment.TrackingNumber</td>
 
-            <td>
-                @(shipment.Status ?? "Pending")
+                <td>@shipment.Destination</td>
+
+                <td>@shipment.Status</td>
+
+                <td>
+                    @shipment.ExpectedDeliveryDate.ToShortDateString()
+                </td>
+
+                <td>
+                    @(shipment.DeliveredDate
+                                    ?.ToShortDateString()
+                                    ?? "Not Delivered")
             </td>
 
-            <td>
-                @shipment.ExpectedDeliveryDate
-                    .ToShortDateString()
-            </td>
+                <td>
 
-            <td>
-                @(shipment.DeliveredDate
-                    ?.ToShortDateString()
-                    ?? "Not Delivered")
-            </td>
-
-            <td>
-
-                <a asp-action="Edit"
-                   asp-route-id="@shipment.Id"
-                   class="btn btn-sm btn-warning">
-                    Edit
-                </a>
-
-                <a asp-action="MarkTransit"
-                   asp-route-id="@shipment.Id"
-                   class="btn btn-sm btn-info">
-                    Transit
-                </a>
-
-                <a asp-action="MarkDelivered"
-                   asp-route-id="@shipment.Id"
-                   class="btn btn-sm btn-success">
-                    Deliver
-                </a>
-
-                @if (Context.Session.GetString("Role")
-                    == "Admin")
-                {
-                    <a asp-action="Delete"
+                    <a asp-action="Edit"
                        asp-route-id="@shipment.Id"
-                       class="btn btn-sm btn-danger">
-                        Delete
+                       class="btn btn-sm btn-warning">
+                        Edit
                     </a>
-                }
 
-            </td>
+                    <a asp-action="MarkTransit"
+                       asp-route-id="@shipment.Id"
+                       class="btn btn-sm btn-info">
+                        Transit
+                    </a>
 
-        </tr>
-    }
+                    <a asp-action="MarkDelivered"
+                       asp-route-id="@shipment.Id"
+                       class="btn btn-sm btn-success">
+                        Deliver
+                    </a>
+
+                @if (Context.Session.GetString("Role") == "Admin")
+                    {
+                        <a asp-action="Delete"
+                           asp-route-id="@shipment.Id"
+                           class="btn btn-sm btn-danger">
+                            Delete
+                        </a>
+                    }
+
+                </td>
+
+            </tr>
+        }
 
     </tbody>
 

@@ -12,7 +12,7 @@ namespace LogisticsTrackingSystem.Data
                 new DbContextOptionsBuilder<ApplicationDbContext>();
 
             optionsBuilder.UseSqlServer(
-                "Server=(localdb)\\MSSQLLocalDB;Database=LogisticsTrackingDb;Trusted_Connection=True;MultipleActiveResultSets=true");
+                 "Server=.\\SQLEXPRESS;Database=LogisticsTrackingDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true");
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }

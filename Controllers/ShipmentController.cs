@@ -9,6 +9,12 @@ namespace LogisticsTrackingSystem.Controllers
 {
     public class ShipmentController : Controller
     {
+
+        private bool IsUserLoggedIn()
+        {
+            return HttpContext.Session
+                .GetString("Username") != null;
+        }
         // Database context
         private readonly ApplicationDbContext _context;
 
@@ -28,6 +34,13 @@ namespace LogisticsTrackingSystem.Controllers
             string searchTerm,
             string status)
         {
+
+            if (!IsUserLoggedIn())
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account");
+            }
             // Read shipments from database
             var shipments =
                 await _context.Shipments.ToListAsync();
@@ -59,9 +72,23 @@ namespace LogisticsTrackingSystem.Controllers
         // Display archived shipments
         public async Task<IActionResult> Archived()
         {
+
+            if (!IsUserLoggedIn())
+            {
+                return RedirectToAction("Login", "Account");
+            }
             var shipments =
                  await _context.Shipments.ToListAsync();
-
+            var role =
+                HttpContext.Session.GetString("Role");
+            var userId =
+                HttpContext.Session.GetInt32("UserId");    
+            if (role != "Admin")
+            {
+                shipments = shipments
+                    .Where(x => x.UserId == userId)
+                    .ToList();
+            }
             var result =
                 _service.GetArchivedShipments(shipments);
 
@@ -71,6 +98,10 @@ namespace LogisticsTrackingSystem.Controllers
         // GET: Create Shipment Page
         public IActionResult Create()
         {
+            if (!IsUserLoggedIn())
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return View();
         }
 
@@ -79,9 +110,44 @@ namespace LogisticsTrackingSystem.Controllers
         public async Task<IActionResult> Create(
             Shipment shipment)
         {
+            if (!IsUserLoggedIn())
+            {
+
+                if (!IsUserLoggedIn())
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+                return RedirectToAction(
+                    "Login",
+                    "Account");
+            }
+
+
             if (ModelState.IsValid)
             {
                 // Save shipment into database
+                var userId =
+                    HttpContext.Session.GetInt32("UserId");
+                shipment.UserId = userId;
+
+                var lastShipment = _context.Shipments
+                    .OrderByDescending(x => x.Id)
+                    .FirstOrDefault();
+
+                int nextNumber = 1;
+
+                if (lastShipment != null &&
+                    !string.IsNullOrEmpty(lastShipment.ShipmentCode))
+                {
+                    nextNumber =
+                        int.Parse(
+                            lastShipment.ShipmentCode.Replace("SL", "")
+                        ) + 1;
+                }
+
+                shipment.ShipmentCode =
+                    $"SL{nextNumber:D3}";
+
                 _context.Shipments.Add(shipment);
 
                 // Commit changes
@@ -96,6 +162,11 @@ namespace LogisticsTrackingSystem.Controllers
         // GET: Edit Shipment
         public async Task<IActionResult> Edit(int id)
         {
+
+            if (!IsUserLoggedIn())
+            {
+                return RedirectToAction("Login", "Account");
+            }
             var shipment =
                 await _context.Shipments.FindAsync(id);
 
@@ -133,6 +204,11 @@ namespace LogisticsTrackingSystem.Controllers
         // GET: Delete Shipment
         public async Task<IActionResult> Delete(int id)
         {
+
+            if (!IsUserLoggedIn())
+            {
+                return RedirectToAction("Login", "Account");
+            }
             var shipment =
                 await _context.Shipments.FindAsync(id);
 
